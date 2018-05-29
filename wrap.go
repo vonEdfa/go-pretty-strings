@@ -5,38 +5,11 @@ import (
 	"unicode/utf8"
 )
 
-// WordWrap - Contains all the settings for word wrapping.
-type WordWrap struct {
-	// Breakpoints - Defines which characters should be able to break a line.
-	// Default: " -"
-	Breakpoints string
-
-	// BreakWord - Defines if the wordwrapper is allowed to break unbreakable words that are too long when wrapping.
-	// Default: true
-	BreakWord bool
-
-	// Hyphen - Defines which character(s) should be used to indicate that a word har been broken.
-	// Default: "-"
-	Hyphen string
-
-	// UseTrailingNewLine - Defines if the output should end with a newline.
-	// Default: false
-	UseTrailingNewLine bool
-}
-
-// Wrap - Shorthand for declaring a new default instance of Pretty and calling its Wrap method.
-//
-// limit: An int declaring how many characters long the max-width of the output will be.
-// s:     One or more sets of strings to be wrapped. The different strings will be treated as separate paragraphs. Separated by comma.
-func Wrap(limit int, s ...string) []string {
-	return New().Wrap(limit, s)
-}
-
 // Wrap - Wraps one or more lines of text at the given length limit.
 //
 // p:     Main Pretty struct containing all your settings.
 // limit: An int declaring how many characters long the max-width of the output will be.
-// strs:  An array of strings to be wrapped. The different strings will be treated as separate paragraphs.
+// strs:  An array of strings to be wrapped.
 func (p Pretty) Wrap(limit int, strs []string) []string {
 	var ret []string
 
@@ -44,19 +17,13 @@ func (p Pretty) Wrap(limit int, strs []string) []string {
 	for _, str := range strs {
 		var newStr string
 
-		// // Start a new paraphraph if we have more than one string
-		// if i > 0 {
-		// 	ret = strings.TrimSuffix(ret, p.Newline)
-		// 	ret += p.Paragraph
-		// }
-
 		// Look for newline characters and let's start by splitting there
 		for _, s := range strings.Split(str, p.Newline) {
 			// Clean the string from any leading or trailing spaces
 			s = strings.Trim(s, " ")
 			newStr += p.wrapLine(s, limit)
 
-			if p.WordWrap.UseTrailingNewLine {
+			if p.UseTrailingNewLine {
 				newStr += p.Newline
 			}
 		}
