@@ -1,7 +1,7 @@
 package pretty
 
 /**
- * Keep the structs alphabetical please!
+ * NOTE: Keep the structs alphabetical please!
  * Thank you~
  */
 
@@ -11,7 +11,6 @@ type Pretty struct {
 	// Note: Only applicable if term width has been successfully calculated (i.e. is >= 0).
 	// Default: true
 	// TODO: Make sure this is implemented everywhere!
-	// BUG: Test
 	AutomaticMaxWidth bool
 
 	// Newline - Defines which characters should be used to create a new line.

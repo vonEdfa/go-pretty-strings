@@ -2,13 +2,9 @@ package pretty
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
-	"runtime"
-	"strconv"
 	"strings"
-	"unicode"
 	"unicode/utf8"
 )
 
@@ -35,61 +31,8 @@ func (p Pretty) CombineStrings(strs ...string) string {
 	return ret
 }
 
-// GetTermSize - Calculates the size of the current terminal window and saves it to Pretty's Terminal struct.
-func (p Pretty) GetTermSize() error {
-	if strings.ToLower(runtime.GOOS) == "linux" {
-		size := runCommand("stty", "size")
-		size = strings.Trim(size, "\n")
-		sizes := strings.Split(string(size), " ")
-		h, err := strconv.ParseInt(sizes[0], 10, 32)
-		if err != nil {
-			log.Fatal(err)
-		}
-		w, err := strconv.ParseInt(sizes[1], 10, 32)
-		if err != nil {
-			log.Fatal(err)
-		}
-		p.Terminal.Height = int(h)
-		p.Terminal.Width = int(w)
-	} else if strings.ToLower(runtime.GOOS) != "windows" {
-		sizes := runCommand("mode", "con")
-		for _, s := range strings.Split(sizes, "\r\n") {
-			if strings.Contains(s, "Columns") {
-				size := strings.TrimFunc(s, func(r rune) bool {
-					return !unicode.IsNumber(r)
-				})
-				w, err := strconv.ParseInt(size, 10, 32)
-				if err != nil {
-					log.Fatal(err)
-				}
-				p.Terminal.Width = int(w)
-			} else if strings.Contains(s, "Lines") {
-				size := strings.TrimFunc(s, func(r rune) bool {
-					return !unicode.IsNumber(r)
-				})
-				h, err := strconv.ParseInt(size, 10, 32)
-				if err != nil {
-					log.Fatal(err)
-				}
-				p.Terminal.Height = int(h)
-			}
-		}
-	} else {
-		return fmt.Errorf("Sorry, there currently doesn't seem to be support for %v. Please add a bug/feature request on github! (%v)", runtime.GOOS, bugReportURL)
-	}
-
-	return nil
-}
-
-func runCommand(cmd string, args ...string) string {
-	exe := exec.Command(cmd, args...)
-	exe.Stdin = os.Stdin
-	out, err := exe.Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return string(out)
+func abort(funcname string, err error) {
+	panic(fmt.Sprintf("%s failed: %v", funcname, err))
 }
 
 func getLongestStringLength(list []string) int {
@@ -112,4 +55,19 @@ func repeatChar(char string, amount int) string {
 	}
 
 	return ret
+}
+
+func runCommand(cmd string, args ...string) string {
+	exe := exec.Command(cmd, args...)
+	exe.Stdin = os.Stdin
+	out, err := exe.Output()
+	if err != nil {
+		var c []string
+		c = append(c, cmd)
+		c = append(c, args...)
+		abort("Command ('"+strings.Join(c, " ")+"')", err)
+		//log.Fatal(err)
+	}
+
+	return string(out)
 }

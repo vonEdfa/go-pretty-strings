@@ -134,8 +134,8 @@ func New() Pretty {
 		},
 
 		Terminal: &Terminal{
-			Width:  -1,
 			Height: -1,
+			Width:  -1,
 		},
 
 		Titles: &Titles{
@@ -156,21 +156,13 @@ func New() Pretty {
 	}
 }
 
-// Wrap - Shorthand for declaring a new default instance of Pretty and calling its Wrap method
-// which wraps one or more lines of text at the given length limit.
+// BorderSquare - Shorthand for declaring a new default instance of Pretty and calling its Border method with the Square BorterType parameter
+// which adds a regular square border around your text.
 //
-// limit: An int declaring how many characters long the max-width of the output will be.
-// s:     One or more sets of strings to be wrapped. Separated by comma.
-func Wrap(limit int, s ...string) []string {
-	return New().Wrap(limit, s)
-}
-
-// Padding - Shorthand for declaring a new default instance of Pretty and calling its Padding method
-// which adds symmetrical padding around the strings.
-//
-// s:  An array of strings to be padded.
-func Padding(s ...string) []string {
-	return New().Padding(s...)
+// s:  An array of strings to be ...
+func BorderSquare(t string, s ...string) string {
+	p := New()
+	return p.Border(p.Borders.Square, t, s...)
 }
 
 // Center - Shorthand for declaring a new default instance of Pretty and calling its Center method
@@ -181,19 +173,27 @@ func Center(s ...string) []string {
 	return New().Center(s...)
 }
 
-// BorderSquare - Shorthand for declaring a new default instance of Pretty and calling its Border method with the Square BorterType parameter
-// which adds a regular square border around your text.
-//
-// s:  An array of strings to be ...
-func BorderSquare(t string, s ...string) string {
-	p := New()
-	return p.Border(p.Borders.Square, t, s...)
-}
-
 // CombineStrings - Shorthand for declaring a new default instance of Pretty and calling its CombineStrings method
 // which combines an array of strings, treating each string as a separate paragraph.
 //
 // strs: An array of strings to be combined.
 func CombineStrings(strs ...string) string {
 	return New().CombineStrings(strs...)
+}
+
+// Padding - Shorthand for declaring a new default instance of Pretty and calling its Padding method
+// which adds symmetrical padding around the strings.
+//
+// s:  An array of strings to be padded.
+func Padding(s ...string) []string {
+	return New().Padding(s...)
+}
+
+// Wrap - Shorthand for declaring a new default instance of Pretty and calling its Wrap method
+// which wraps one or more lines of text at the given length limit.
+//
+// limit: An int declaring how many characters long the max-width of the output will be.
+// s:     One or more sets of strings to be wrapped. Separated by comma.
+func Wrap(limit int, s ...string) []string {
+	return New().Wrap(limit, s)
 }

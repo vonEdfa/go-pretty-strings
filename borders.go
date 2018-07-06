@@ -31,7 +31,7 @@ func (p Pretty) Border(b BorderType, t string, s ...string) string {
 		diff := width + p.OutputPadding.Width*2 - utf8.RuneCountInString(t)
 		lineL := repeatChar(b.Horizontal, p.OutputPadding.Width-1)
 		lineR := repeatChar(b.Horizontal, diff-p.OutputPadding.Width-1)
-		title := p.addPaddingToLine(strings.Title(t), 1, 1) // TODO: Implement so it listens to picked title case.
+		title := p.addPaddingToLine(p.borderTitle(t), 1, 1)
 
 		top = margin + b.TopLeft + lineL + title + lineR + b.TopRight + margin + "\n"
 	}
@@ -62,6 +62,10 @@ func (p Pretty) Border(b BorderType, t string, s ...string) string {
 	ret = strings.Join(border, "")
 
 	return ret
+}
+
+func (p Pretty) borderTitle(t string) string {
+	return p.FormatTitle(t, p.Borders.Title.Bold, p.Borders.Title.Italics, p.Borders.Title.Underline, p.Borders.Title.UseTitleColor, p.Borders.Title.Spaced)
 }
 
 func (p Pretty) addHorizontalBorder(s string, char string, w int) string {
